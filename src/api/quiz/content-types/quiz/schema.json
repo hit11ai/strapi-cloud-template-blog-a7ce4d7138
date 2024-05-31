@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "quizzes",
+  "info": {
+    "singularName": "quiz",
+    "pluralName": "quizzes",
+    "displayName": "Quiz"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "QuizId": {
+      "type": "string"
+    },
+    "match": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::match.match",
+      "inversedBy": "quizzes"
+    },
+    "QuestionText": {
+      "type": "string"
+    },
+    "QuestionDetail": {
+      "type": "string"
+    },
+    "OptionA": {
+      "type": "string"
+    },
+    "OptionAWager": {
+      "type": "decimal"
+    },
+    "OptionBWager": {
+      "type": "decimal"
+    },
+    "OptionB": {
+      "type": "string"
+    }
+  }
+}

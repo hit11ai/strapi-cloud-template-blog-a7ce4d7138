@@ -794,12 +794,12 @@ export interface ApiContestContest extends Schema.CollectionType {
     singularName: 'contest';
     pluralName: 'contests';
     displayName: 'Contest';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    ContestId: Attribute.String;
     Title: Attribute.String;
     Prize: Attribute.String;
     OriginalAmount: Attribute.String;
@@ -808,6 +808,12 @@ export interface ApiContestContest extends Schema.CollectionType {
     DiscountText: Attribute.String;
     Detail: Attribute.String;
     TotalSpots: Attribute.BigInteger;
+    Match: Attribute.Relation<
+      'api::contest.contest',
+      'manyToOne',
+      'api::match.match'
+    >;
+    ContestId: Attribute.Integer & Attribute.Unique;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -854,6 +860,16 @@ export interface ApiMatchMatch extends Schema.CollectionType {
       'api::team.team'
     >;
     MatchType: Attribute.Enumeration<['T20', 'ODI', 'Test']>;
+    contests: Attribute.Relation<
+      'api::match.match',
+      'oneToMany',
+      'api::contest.contest'
+    >;
+    quizzes: Attribute.Relation<
+      'api::match.match',
+      'oneToMany',
+      'api::quiz.quiz'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -914,6 +930,39 @@ export interface ApiPlayerPlayer extends Schema.CollectionType {
   };
 }
 
+export interface ApiQuizQuiz extends Schema.CollectionType {
+  collectionName: 'quizzes';
+  info: {
+    singularName: 'quiz';
+    pluralName: 'quizzes';
+    displayName: 'Quiz';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    QuizId: Attribute.String;
+    match: Attribute.Relation<
+      'api::quiz.quiz',
+      'manyToOne',
+      'api::match.match'
+    >;
+    QuestionText: Attribute.String;
+    QuestionDetail: Attribute.String;
+    OptionA: Attribute.String;
+    OptionAWager: Attribute.Decimal;
+    OptionBWager: Attribute.Decimal;
+    OptionB: Attribute.String;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::quiz.quiz', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::quiz.quiz', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 export interface ApiTeamTeam extends Schema.CollectionType {
   collectionName: 'teams';
   info: {
@@ -968,6 +1017,7 @@ declare module '@strapi/types' {
       'api::contest.contest': ApiContestContest;
       'api::match.match': ApiMatchMatch;
       'api::player.player': ApiPlayerPlayer;
+      'api::quiz.quiz': ApiQuizQuiz;
       'api::team.team': ApiTeamTeam;
     }
   }

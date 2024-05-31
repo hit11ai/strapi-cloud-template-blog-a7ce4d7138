@@ -47,6 +47,18 @@
         "ODI",
         "Test"
       ]
+    },
+    "contests": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::contest.contest",
+      "mappedBy": "Match"
+    },
+    "quizzes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::quiz.quiz",
+      "mappedBy": "match"
     }
   }
 }

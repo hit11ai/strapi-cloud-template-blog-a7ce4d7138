@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "contests",
+  "info": {
+    "singularName": "contest",
+    "pluralName": "contests",
+    "displayName": "Contest"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "ContestId": {
+      "type": "string"
+    },
+    "Title": {
+      "type": "string"
+    },
+    "Prize": {
+      "type": "string"
+    },
+    "OriginalAmount": {
+      "type": "string"
+    },
+    "DiscountedAmount": {
+      "type": "string"
+    },
+    "DiscountEndsIn": {
+      "type": "string"
+    },
+    "DiscountText": {
+      "type": "string"
+    },
+    "Detail": {
+      "type": "string"
+    },
+    "TotalSpots": {
+      "type": "biginteger"
+    }
+  }
+}

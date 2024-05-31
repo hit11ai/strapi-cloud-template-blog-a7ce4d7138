@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "players",
+  "info": {
+    "singularName": "player",
+    "pluralName": "players",
+    "displayName": "Player",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "PlayerId": {
+      "type": "integer",
+      "unique": true
+    },
+    "PlayerName": {
+      "type": "string"
+    },
+    "FantasyCredits": {
+      "type": "integer"
+    },
+    "team": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::team.team",
+      "inversedBy": "player"
+    },
+    "PlayingPosition": {
+      "type": "integer"
+    },
+    "Role": {
+      "type": "enumeration",
+      "enum": [
+        "BATTER",
+        "BOWLER",
+        "ALL_ROUNDER",
+        "WICKETKEEPER"
+      ]
+    }
+  }
+}

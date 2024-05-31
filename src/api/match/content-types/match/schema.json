@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "matches",
+  "info": {
+    "singularName": "match",
+    "pluralName": "matches",
+    "displayName": "Match",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "MatchId": {
+      "type": "string",
+      "unique": true
+    },
+    "Title": {
+      "type": "string"
+    },
+    "StartTime": {
+      "type": "datetime"
+    },
+    "Location": {
+      "type": "string"
+    },
+    "Prize": {
+      "type": "string"
+    },
+    "TeamA": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "matches"
+    },
+    "TeamB": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "matches"
+    },
+    "MatchType": {
+      "type": "enumeration",
+      "enum": [
+        "T20",
+        "ODI",
+        "Test"
+      ]
+    }
+  }
+}

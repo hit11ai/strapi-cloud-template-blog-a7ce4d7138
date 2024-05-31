@@ -512,6 +512,12 @@ export interface PluginContentReleasesRelease extends Schema.CollectionType {
   attributes: {
     name: Attribute.String & Attribute.Required;
     releasedAt: Attribute.DateTime;
+    scheduledAt: Attribute.DateTime;
+    timezone: Attribute.String;
+    status: Attribute.Enumeration<
+      ['ready', 'blocked', 'failed', 'done', 'empty']
+    > &
+      Attribute.Required;
     actions: Attribute.Relation<
       'plugin::content-releases.release',
       'oneToMany',
@@ -566,6 +572,7 @@ export interface PluginContentReleasesReleaseAction
       'manyToOne',
       'plugin::content-releases.release'
     >;
+    isEntryValid: Attribute.Boolean;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -781,82 +788,125 @@ export interface PluginI18NLocale extends Schema.CollectionType {
   };
 }
 
-export interface ApiAboutAbout extends Schema.SingleType {
-  collectionName: 'abouts';
+export interface ApiContestContest extends Schema.CollectionType {
+  collectionName: 'contests';
   info: {
-    singularName: 'about';
-    pluralName: 'abouts';
-    displayName: 'About';
-    description: 'Write about yourself and the content you create';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    title: Attribute.String;
-    blocks: Attribute.DynamicZone<
-      ['shared.media', 'shared.quote', 'shared.rich-text', 'shared.slider']
-    >;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::about.about',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::about.about',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiArticleArticle extends Schema.CollectionType {
-  collectionName: 'articles';
-  info: {
-    singularName: 'article';
-    pluralName: 'articles';
-    displayName: 'Article';
-    description: 'Create your blog content';
+    singularName: 'contest';
+    pluralName: 'contests';
+    displayName: 'Contest';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    title: Attribute.String;
-    description: Attribute.Text &
-      Attribute.SetMinMaxLength<{
-        maxLength: 80;
-      }>;
-    slug: Attribute.UID<'api::article.article', 'title'>;
-    cover: Attribute.Media;
-    author: Attribute.Relation<
-      'api::article.article',
+    ContestId: Attribute.String;
+    Title: Attribute.String;
+    Prize: Attribute.String;
+    OriginalAmount: Attribute.String;
+    DiscountedAmount: Attribute.String;
+    DiscountEndsIn: Attribute.String;
+    DiscountText: Attribute.String;
+    Detail: Attribute.String;
+    TotalSpots: Attribute.BigInteger;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::contest.contest',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::contest.contest',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiMatchMatch extends Schema.CollectionType {
+  collectionName: 'matches';
+  info: {
+    singularName: 'match';
+    pluralName: 'matches';
+    displayName: 'Match';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    MatchId: Attribute.String & Attribute.Unique;
+    Title: Attribute.String;
+    StartTime: Attribute.DateTime;
+    Location: Attribute.String;
+    Prize: Attribute.String;
+    TeamA: Attribute.Relation<
+      'api::match.match',
       'manyToOne',
-      'api::author.author'
+      'api::team.team'
     >;
-    category: Attribute.Relation<
-      'api::article.article',
+    TeamB: Attribute.Relation<
+      'api::match.match',
       'manyToOne',
-      'api::category.category'
+      'api::team.team'
     >;
-    blocks: Attribute.DynamicZone<
-      ['shared.media', 'shared.quote', 'shared.rich-text', 'shared.slider']
+    MatchType: Attribute.Enumeration<['T20', 'ODI', 'Test']>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::match.match',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::match.match',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPlayerPlayer extends Schema.CollectionType {
+  collectionName: 'players';
+  info: {
+    singularName: 'player';
+    pluralName: 'players';
+    displayName: 'Player';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    PlayerId: Attribute.Integer & Attribute.Unique;
+    PlayerName: Attribute.String;
+    FantasyCredits: Attribute.Integer;
+    team: Attribute.Relation<
+      'api::player.player',
+      'oneToOne',
+      'api::team.team'
+    >;
+    PlayingPosition: Attribute.Integer;
+    Role: Attribute.Enumeration<
+      ['BATTER', 'BOWLER', 'ALL_ROUNDER', 'WICKETKEEPER']
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
-      'api::article.article',
+      'api::player.player',
       'oneToOne',
       'admin::user'
     > &
       Attribute.Private;
     updatedBy: Attribute.Relation<
-      'api::article.article',
+      'api::player.player',
       'oneToOne',
       'admin::user'
     > &
@@ -864,109 +914,35 @@ export interface ApiArticleArticle extends Schema.CollectionType {
   };
 }
 
-export interface ApiAuthorAuthor extends Schema.CollectionType {
-  collectionName: 'authors';
+export interface ApiTeamTeam extends Schema.CollectionType {
+  collectionName: 'teams';
   info: {
-    singularName: 'author';
-    pluralName: 'authors';
-    displayName: 'Author';
-    description: 'Create authors for your content';
+    singularName: 'team';
+    pluralName: 'teams';
+    displayName: 'Team';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
   };
   attributes: {
-    name: Attribute.String;
-    avatar: Attribute.Media;
-    email: Attribute.String;
-    articles: Attribute.Relation<
-      'api::author.author',
+    TeamName: Attribute.String;
+    TeamId: Attribute.String;
+    matches: Attribute.Relation<
+      'api::team.team',
       'oneToMany',
-      'api::article.article'
+      'api::match.match'
+    >;
+    player: Attribute.Relation<
+      'api::team.team',
+      'oneToOne',
+      'api::player.player'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::author.author',
-      'oneToOne',
-      'admin::user'
-    > &
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &
       Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::author.author',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiCategoryCategory extends Schema.CollectionType {
-  collectionName: 'categories';
-  info: {
-    singularName: 'category';
-    pluralName: 'categories';
-    displayName: 'Category';
-    description: 'Organize your content into categories';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    name: Attribute.String;
-    slug: Attribute.UID;
-    articles: Attribute.Relation<
-      'api::category.category',
-      'oneToMany',
-      'api::article.article'
-    >;
-    description: Attribute.Text;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::category.category',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::category.category',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiGlobalGlobal extends Schema.SingleType {
-  collectionName: 'globals';
-  info: {
-    singularName: 'global';
-    pluralName: 'globals';
-    displayName: 'Global';
-    description: 'Define global settings';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    siteName: Attribute.String & Attribute.Required;
-    favicon: Attribute.Media;
-    siteDescription: Attribute.Text & Attribute.Required;
-    defaultSeo: Attribute.Component<'shared.seo'>;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::global.global',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::global.global',
-      'oneToOne',
-      'admin::user'
-    > &
+    updatedBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &
       Attribute.Private;
   };
 }
@@ -989,11 +965,10 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::i18n.locale': PluginI18NLocale;
-      'api::about.about': ApiAboutAbout;
-      'api::article.article': ApiArticleArticle;
-      'api::author.author': ApiAuthorAuthor;
-      'api::category.category': ApiCategoryCategory;
-      'api::global.global': ApiGlobalGlobal;
+      'api::contest.contest': ApiContestContest;
+      'api::match.match': ApiMatchMatch;
+      'api::player.player': ApiPlayerPlayer;
+      'api::team.team': ApiTeamTeam;
     }
   }
 }
